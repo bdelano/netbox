@@ -75,12 +75,13 @@ class LogoutView(View):
         # SAML must be enabled, required, and the on_logout URL must be set.
         if settings.SAML_ENABLED and settings.SAML_ON_LOGOUT_URL and settings.SAML_REQUIRED:
             redirect_to = settings.SAML_ON_LOGOUT_URL
+            response=HttpResponseRedirect(redirect_to)
         else:
             response = HttpResponseRedirect(reverse('home'))
-            response.delete_cookie('session_key')
-            return response
 
         # Delete session key cookie (if set) upon logout
+        response.delete_cookie('session_key')
+        return response
 
 
 
