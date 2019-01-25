@@ -1,8 +1,7 @@
 # SAML 2.0 for NetBox
 
-[TOC]
-
-The original form of this doc can be found here:https://github.com/explody/netbox/blob/basic_saml_support/README_SAML.md
+The original form of this doc can be found here:
+https://github.com/explody/netbox/blob/basic_saml_support/README_SAML.md
 
 ### Overview
 
@@ -169,6 +168,47 @@ authnContextClassRef: PasswordProtectedTransport
 Honor Force Authentication: Yes
 SAML Issuer ID: http://www.okta.com/${org.externalKey}
 ```
+
+#### Instructions for DUO Access Gateway (DAG)
+* [Setup for Linux](https://duo.com/docs/dag-linux)
+* [Setup for Windows](https://duo.com/docs/dag-windows)
+
+Once your DAG is setup you will need to setup a DUO application via your Dashboard on duo.com. This requires that you have a paid account to access the SAML applications.  After logging into your dashboard do the following:
+* Click on 'Applications'
+* Click 'Protect an Application'
+* Search for 'SAML - Service Provider'
+* Fill in the following fields:
+
+| Field | Value from netbox config |
+|-------|-------|
+| Service Provider Name | `a unique name for your instance` |
+| Entity ID| `http://localhost:8080/saml2/metadata/` |
+| Assertion Consumer Service | `http://localhost:8080/saml2/acs/` |
+* Save your changes
+* At the top of your page click 'Download your configuration file' (this will be used on your DAG)
+
+Now go back to the DAG you created earlier, and do the following:
+* Click on 'Applications'
+* Under 'Add Application' heading you should see a 'choose file' button click this and select the 'configuration file' file you generated in the steps above
+* Click 'Upload' and your application should be added
+* You should see a 'Metadata' section at the bottom of this page. Use this information to populate the following on your netbox SAML conf.py:
+
+| DUO Field | Netbox Variable |
+|-----------|-----------------|
+| Entity ID | SAML_IDP_ENTITY_ID |
+| SSO URL | SAML_IDP_SSO_SERVICE |
+| Logout URL | SAML_ON_LOGOUT_URL |
+
+
+
+
+
+
+
+
+
+
+
 
 
 
