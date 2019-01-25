@@ -16,6 +16,28 @@ from utilities.forms import ConfirmationForm
 from .forms import LoginForm, PasswordChangeForm, TokenForm
 from .models import Token
 
+from djangosaml2.cache import StateCache,IdentityCache
+from djangosaml2.overrides import Saml2Client
+from djangosaml2.conf import get_config
+from saml2.ident import code, decode
+
+"""
+state = StateCache(request.session)
+    conf = get_config(config_loader_path, request)
+
+    client = Saml2Client(conf, state_cache=state,
+                         identity_cache=IdentityCache(request.session))
+    subject_id = _get_subject_id(request.session)
+
+try:
+        identity = client.users.get_identity(subject_id,
+                                             check_not_on_or_after=False)
+    except AttributeError:
+        return HttpResponse("No active SAML identity found. Are you sure you have logged in via SAML?")
+
+    return render(request, template, {'attributes': identity[0]})
+"""
+
 
 #
 # Login/logout
@@ -62,18 +84,33 @@ class LoginView(View):
 
 class LogoutView(View):
 
+    def _get_subject_id(self,session):
+        try:
+            return decode(session['_saml2_subject_id'])
+        except KeyError:
+            return None
+
     def get(self, request):
+        #get SAML details if they exist
+        state = StateCache(request.session)
+        conf = get_config(None, request)
+        client = Saml2Client(conf, state_cache=state,identity_cache=IdentityCache(request.session))
+        subject_id = self._get_subject_id(request.session)
+        try:
+            identity = client.users.get_identity(subject_id,check_not_on_or_after=False)
+            isSAML=True
+        except AttributeError:
+            isSAML=False
 
         # Log out the user
         auth_logout(request)
         # Don't display this if SAML is required, as the logout landing page is unlikely to be
         # a netbox page
-        if not settings.SAML_REQUIRED:
+        if not isSAML:
             messages.info(request, "You have logged out.")
-
         # In order for a custom SAML on_logout URL to be relevant,
         # SAML must be enabled, required, and the on_logout URL must be set.
-        if settings.SAML_ENABLED and settings.SAML_ON_LOGOUT_URL and settings.SAML_REQUIRED:
+        if settings.SAML_ENABLED and settings.SAML_ON_LOGOUT_URL and isSAML:
             redirect_to = settings.SAML_ON_LOGOUT_URL
             response=HttpResponseRedirect(redirect_to)
         else:

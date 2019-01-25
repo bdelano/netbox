@@ -169,7 +169,7 @@ Honor Force Authentication: Yes
 SAML Issuer ID: http://www.okta.com/${org.externalKey}
 ```
 
-#### Instructions for DUO Access Gateway (DAG)
+### Instructions for DUO Access Gateway (DAG)
 * [Setup for Linux](https://duo.com/docs/dag-linux)
 * [Setup for Windows](https://duo.com/docs/dag-windows)
 
@@ -198,19 +198,6 @@ Now go back to the DAG you created earlier, and do the following:
 | Entity ID | SAML_IDP_ENTITY_ID |
 | SSO URL | SAML_IDP_SSO_SERVICE |
 | Logout URL | SAML_ON_LOGOUT_URL |
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ### Usage
 

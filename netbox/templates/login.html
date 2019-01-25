@@ -28,7 +28,10 @@
                     {% render_form form %}
                 </div>
                 <div class="panel-footer text-right">
-                    <button type="submit" class="btn btn-primary">Log In</button>
+                    <button type="submit" class="btn btn-primary">Log In</button>&nbsp;
+                    {% if settings.SAML_ENABLED %}
+                    <a href="/saml2/login" class="btn btn-primary">Log In with SAML</a>
+                    {% endif %}
                 </div>
             </div>
         </form>
