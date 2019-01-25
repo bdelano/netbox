@@ -7,6 +7,7 @@ from .views import server_error
 
 BASE_PATH = getattr(settings, 'BASE_PATH', False)
 LOGIN_REQUIRED = getattr(settings, 'LOGIN_REQUIRED', False)
+SAML_ENABLED = getattr(settings, 'SAML_ENABLED', False)
 
 
 class LoginRequiredMiddleware(object):
@@ -18,11 +19,19 @@ class LoginRequiredMiddleware(object):
 
     def __call__(self, request):
         if LOGIN_REQUIRED and not request.user.is_authenticated:
-            # Redirect unauthenticated requests to the login page. API requests are exempt from redirection as the API
-            # performs its own authentication.
+            # Redirect unauthenticated requests to the login page. API requests are exempt from
+            # redirection as the API performs its own authentication.
             api_path = reverse('api-root')
-            if not request.path_info.startswith(api_path) and request.path_info != settings.LOGIN_URL:
-                return HttpResponseRedirect('{}?next={}'.format(settings.LOGIN_URL, request.path_info))
+
+            if not request.path_info.startswith(api_path):
+
+                # If not the login path, SAML is enabled and the request is *not* for a saml path,
+                # OR not the login path, SAML is *not* enabled
+                # Then redirect to the login URL
+                if (request.path_info != settings.LOGIN_URL and
+                   (SAML_ENABLED and not request.path_info.startswith("/saml2"))) or \
+                   (request.path_info != settings.LOGIN_URL and not SAML_ENABLED):
+                    return HttpResponseRedirect('{}?next={}'.format(settings.LOGIN_URL,request.path_info))
         return self.get_response(request)
 
 

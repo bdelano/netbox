@@ -67,6 +67,11 @@ if settings.WEBHOOKS_ENABLED:
         url(r'^admin/webhook-backend-status/', include('django_rq.urls')),
     ]
 
+if settings.SAML_ENABLED:
+    _patterns += [
+        url(r'^saml2/', include('djangosaml2.urls')),
+    ]
+
 if settings.DEBUG:
     import debug_toolbar
     _patterns += [

@@ -4,9 +4,13 @@
 /netbox/reports/*
 !/netbox/reports/__init__.py
 /netbox/static
+/netbox/netbox/saml/config.py
+/netbox/netbox/saml/*.pem
+/netbox/netbox/saml/*.xml
 .idea
 /*.sh
 !upgrade.sh
 fabfile.py
 *.swp
 gunicorn_config.py
+.remote-sync.json

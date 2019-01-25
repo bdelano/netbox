@@ -108,6 +108,38 @@ if LDAP_CONFIGURED:
             "netbox/ldap_config.py to disable LDAP."
         )
 
+try:
+    from .saml.config import SAML_ENABLED, SAML_REQUIRED, SAML_CONFIG, SAML_ON_LOGOUT_URL
+except ImportError:
+    SAML_ENABLED = False
+    SAML_REQUIRED = False
+
+# Default authentication URL
+LOGIN_URL = '/{}login/'.format(BASE_PATH)
+
+# Default landing page after authentication
+LOGIN_REDIRECT_URL = '/'
+
+if SAML_ENABLED:
+    # Prepend the SAML backend if SAML is configured
+    AUTHENTICATION_BACKENDS = [
+        'djangosaml2.backends.Saml2Backend',
+        'django.contrib.auth.backends.ModelBackend',
+    ]
+
+    # Various SAML options
+    SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+    # Attributes, including for usernames, are highly customizable.  In the
+    # simplest setup, your IDP will either need to pass 'uid' as an attribute,
+    # or set this to True to use the default 'NameId'. For deeper customization
+    # see the pysaml2 and djangosaml2 docs
+    SAML_USE_NAME_ID_AS_USERNAME = True
+
+    # If SAML is required, overwrite the LOGIN_URL
+    if SAML_REQUIRED:
+        LOGIN_URL = '/{}saml2/login/'.format(BASE_PATH)
+
 # Database
 configuration.DATABASE.update({'ENGINE': 'django.db.backends.postgresql'})
 DATABASES = {
@@ -241,7 +273,7 @@ MESSAGE_TAGS = {
 }
 
 # Authentication URLs
-LOGIN_URL = '/{}login/'.format(BASE_PATH)
+#LOGIN_URL = '/{}login/'.format(BASE_PATH)
 
 # Secrets
 SECRETS_MIN_PUBKEY_SIZE = 2048
