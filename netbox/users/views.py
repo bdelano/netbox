@@ -104,16 +104,12 @@ class LogoutView(View):
 
         # Log out the user
         auth_logout(request)
-        # Don't display this if SAML is required, as the logout landing page is unlikely to be
-        # a netbox page
-        if not isSAML:
-            messages.info(request, "You have logged out.")
-        # In order for a custom SAML on_logout URL to be relevant,
-        # SAML must be enabled, required, and the on_logout URL must be set.
-        if settings.SAML_ENABLED and settings.SAML_ON_LOGOUT_URL and isSAML:
+        # If there is a SAML logout url configured and the user is SAML just redirect
+        if settings.SAML_ON_LOGOUT_URL and isSAML:
             redirect_to = settings.SAML_ON_LOGOUT_URL
             response=HttpResponseRedirect(redirect_to)
         else:
+            messages.info(request, "You have logged out.")
             response = HttpResponseRedirect(reverse('home'))
 
         # Delete session key cookie (if set) upon logout

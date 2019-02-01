@@ -3,10 +3,16 @@
 The original form of this doc can be found here:
 https://github.com/explody/netbox/blob/basic_saml_support/README_SAML.md
 
+- [Overview](#overview)   
+- [Installation](#installation)   
+- [Configuration](#configuration)   
+- [IDP Configuration](#idp-configuration)   
+- [Instructions for DUO Access Gateway (DAG)](#instructions-for-duo-access-gateway-dag)   
+- [Usage](#usage)
+
 ### Overview
 
 This doc covers only the most basic setup of a SAML Service Provider (SP, e.g. netbox) and a basic example of Identity Provider (IDP, e.g. Okta, OneLogin, etc.) settings.  The config.py used for SAML configuration has been simplified and should work, given a few simple modifications to suit your environment.  However, SAML is a large and complicated subject and some IDPs may require specific settings.  Should this not work with the basic configuration, we encourage you to refer to the pysaml2 and djangosaml2 documentation for its much greater detail on SAML options and settings.
-
 
 ### Installation
 
@@ -69,12 +75,9 @@ SAML_DIR = path.dirname(path.abspath(__file__))
 # Otherwise, users will be sent to the netbox root page.
 SAML_ON_LOGOUT_URL = 'https://idp.domain.com/'
 ```
-
-
-
 ##### Recommended Additional Settings
 
-In the SAML_CONFIG dictionary, it's reommended that you also configure the contact and organization information so your metadata is prettier, or at least more accurate.
+In the SAML_CONFIG dictionary, it's recommended that you also configure the contact and organization information so your metadata is prettier, or at least more accurate.
 
 ```python
     # own metadata settings
@@ -98,6 +101,24 @@ In the SAML_CONFIG dictionary, it's reommended that you also configure the conta
     },
 ```
 
+##### Set Up Certificates
+
+SAML assertion signing works fine with a self-signed SSL certificate.  Alternately, you can also use custom, privately signed or commercial certificates.  In all cases, the paths to the certificate and key must be configured in `config.py`.  By default, the config expects both files to be in the same directory as itself:
+
+```python
+    # For assertion signing. This can be a self-signed pair.
+    'key_file': path.join(SAML_DIR, 'key.pem'),  # private part
+    'cert_file': path.join(SAML_DIR, 'cert.pem'),  # public part
+```
+If you have your own cert+key, simply copy them into the same directory as `config.py`, to `cert.pem` and `key.pem` respectively.  If you'd like to generate a self-signed certificate, you can do so as follows:
+
+```
+# cd /path/to/netbox
+# cd netbox/netbox/saml
+# openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
+```
+
+Please note:  *This generates a self-signed cert that is valid for **one year**, and **without a passphrase**.
 
 
 ##### Set Up Metadata
@@ -111,30 +132,6 @@ Next, you'll need to generate your metadata. Luckily, pysaml2 comes with a utili
 # cd netbox/netbox/saml
 # make_metadata.py config.py > sp.xml
 ```
-
-
-
-##### Set Up Certificates
-
-SAML assertion signing works fine with a self-signed SSL certificate.  Alternately, you can also use custom, privately signed or commercial certificates.  In all cases, the paths to the certificate and key must be configured in `config.py`.  By default, the config expects both files to be in the same directory as itself:
-
-```python
-    # For assertion signing. This can be a self-signed pair.
-    'key_file': path.join(SAML_DIR, 'key.pem'),  # private part
-    'cert_file': path.join(SAML_DIR, 'cert.pem'),  # public part
-```
-
-If you have your own cert+key, simply copy them into the same directory as `config.py`, to `cert.pem` and `key.pem` respectively.  If you'd like to generate a self-signed certificate, you can do so as follows:
-
-```
-# cd /path/to/netbox
-# cd netbox/netbox/saml
-# openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
-```
-
-Please note:  *This generates a self-signed cert that is valid for **one year**, and **without a passphrase**.
-
-
 
 ### IDP Configuration
 
@@ -184,6 +181,8 @@ Once your DAG is setup you will need to setup a DUO application via your Dashboa
 | Service Provider Name | `a unique name for your instance` |
 | Entity ID| `http://localhost:8080/saml2/metadata/` |
 | Assertion Consumer Service | `http://localhost:8080/saml2/acs/` |
+| Single Logout URL | `http://localhost:8080/saml2/logout` |
+| Service Provider Login URL | `http://localhost:8080/saml2/logout` |
 * Save your changes
 * At the top of your page click 'Download your configuration file' (this will be used on your DAG)
 
@@ -198,6 +197,7 @@ Now go back to the DAG you created earlier, and do the following:
 | Entity ID | SAML_IDP_ENTITY_ID |
 | SSO URL | SAML_IDP_SSO_SERVICE |
 | Logout URL | SAML_ON_LOGOUT_URL |
+* Also in this section, you should click 'Download XML metadata' and copy this to `netbox/netbox/saml/idp.xml`
 
 ### Usage
 
