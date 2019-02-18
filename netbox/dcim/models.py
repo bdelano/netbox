@@ -54,7 +54,11 @@ class ComponentModel(models.Model):
         """
         Log an ObjectChange including the parent Device/VM.
         """
-        parent = self.device if self.device is not None else getattr(self, 'virtual_machine', None)
+        try:
+            parent = getattr(self, 'device', None) or getattr(self, 'virtual_machine', None)
+        except ObjectDoesNotExist:
+            # The parent device/VM has already been deleted
+            parent = None
         ObjectChange(
             user=user,
             request_id=request_id,
@@ -63,6 +67,10 @@ class ComponentModel(models.Model):
             action=action,
             object_data=serialize_object(self)
         ).save()
+
+    @property
+    def parent(self):
+        return getattr(self, 'device', None)
 
 
 class CableTermination(models.Model):
@@ -157,6 +165,14 @@ class CableTermination(models.Model):
             return path + [(peer_port, None, None)]
 
         return path + next_segment
+
+    def get_cable_peer(self):
+        if self.cable is None:
+            return None
+        if self._cabled_as_a.exists():
+            return self.cable.termination_b
+        if self._cabled_as_b.exists():
+            return self.cable.termination_a
 
 
 #
@@ -964,7 +980,7 @@ class DeviceType(ChangeLoggedModel, CustomFieldModel):
             })
 
     @property
-    def full_name(self):
+    def display_name(self):
         return '{} {}'.format(self.manufacturer.name, self.model)
 
     @property

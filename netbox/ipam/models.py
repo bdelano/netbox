@@ -29,6 +29,8 @@ class VRF(ChangeLoggedModel, CustomFieldModel):
     rd = models.CharField(
         max_length=21,
         unique=True,
+        blank=True,
+        null=True,
         verbose_name='Route distinguisher'
     )
     tenant = models.ForeignKey(
@@ -79,9 +81,9 @@ class VRF(ChangeLoggedModel, CustomFieldModel):
 
     @property
     def display_name(self):
-        if self.name and self.rd:
+        if self.rd:
             return "{} ({})".format(self.name, self.rd)
-        return None
+        return self.name
 
 
 class RIR(ChangeLoggedModel):

@@ -1,3 +1,69 @@
+v2.5.6 (2019-02-13)
+
+## Enhancements
+
+* [#2758](https://github.com/digitalocean/netbox/issues/2758) - Add cable trace button to pass-through ports
+* [#2839](https://github.com/digitalocean/netbox/issues/2839) - Add "110 punch" type for pass-through ports
+* [#2854](https://github.com/digitalocean/netbox/issues/2854) - Enable bulk editing of pass-through ports
+* [#2866](https://github.com/digitalocean/netbox/issues/2866) - Add cellular interface types (GSM/CDMA/LTE)
+
+## Bug Fixes
+
+* [#2841](https://github.com/digitalocean/netbox/issues/2841) - Fix filtering by VRF for prefix and IP address lists
+* [#2844](https://github.com/digitalocean/netbox/issues/2844) - Correct display of far cable end for pass-through ports
+* [#2845](https://github.com/digitalocean/netbox/issues/2845) - Enable filtering of rack unit list by unit ID
+* [#2856](https://github.com/digitalocean/netbox/issues/2856) - Fix navigation links between LAG interfaces and their members on device view
+* [#2857](https://github.com/digitalocean/netbox/issues/2857) - Add `display_name` to DeviceType API serializer; fix DeviceType list for bulk device edit
+* [#2862](https://github.com/digitalocean/netbox/issues/2862) - Follow return URL when connecting a cable
+* [#2864](https://github.com/digitalocean/netbox/issues/2864) - Correct display of VRF name when no RD is assigned
+* [#2877](https://github.com/digitalocean/netbox/issues/2877) - Fixed device role label display on light background color
+* [#2880](https://github.com/digitalocean/netbox/issues/2880) - Sanitize user password if an exception is raised during login
+
+---
+
+v2.5.5 (2019-01-31)
+
+## Enhancements
+
+* [#2805](https://github.com/digitalocean/netbox/issues/2805) - Allow null route distinguisher for VRFs
+* [#2809](https://github.com/digitalocean/netbox/issues/2809) - Remove VRF child prefixes table; link to main prefixes view
+* [#2825](https://github.com/digitalocean/netbox/issues/2825) - Include directly connected device for front/rear ports
+
+## Bug Fixes
+
+* [#2824](https://github.com/digitalocean/netbox/issues/2824) - Fix template exception when viewing rack elevations list
+* [#2833](https://github.com/digitalocean/netbox/issues/2833) - Fix form widget for front port template creation
+* [#2835](https://github.com/digitalocean/netbox/issues/2835) - Fix certain model filters did not support the `q` query param
+* [#2837](https://github.com/digitalocean/netbox/issues/2837) - Fix select2 nullable filter fields add multiple null_option elements when paging
+
+---
+
+v2.5.4 (2019-01-29)
+
+## Enhancements
+
+* [#2516](https://github.com/digitalocean/netbox/issues/2516) - Implemented Select2 for all Model backed selection fields
+* [#2590](https://github.com/digitalocean/netbox/issues/2590) - Implemented the color picker with Select2 to show colors in the background
+* [#2733](https://github.com/digitalocean/netbox/issues/2733) - Enable bulk assignment of MAC addresses to interfaces
+* [#2735](https://github.com/digitalocean/netbox/issues/2735) - Implemented Select2 for all list filter form select elements
+* [#2753](https://github.com/digitalocean/netbox/issues/2753) - Implemented Select2 to replace most all instances of select fields in forms
+* [#2766](https://github.com/digitalocean/netbox/issues/2766) - Extend users admin table to include superuser and active fields
+* [#2782](https://github.com/digitalocean/netbox/issues/2782) - Add `is_pool` field for prefix filtering
+* [#2807](https://github.com/digitalocean/netbox/issues/2807) - Include device site/rack assignment in cable trace view
+* [#2808](https://github.com/digitalocean/netbox/issues/2808) - Loosen version pinning for Django to allow patch releases
+* [#2810](https://github.com/digitalocean/netbox/issues/2810) - Include description fields in interface connections export
+
+## Bug Fixes
+
+* [#2779](https://github.com/digitalocean/netbox/issues/2779) - Include "none" option when filter IP addresses by role
+* [#2783](https://github.com/digitalocean/netbox/issues/2783) - Fix AttributeError exception when attempting to delete region(s)
+* [#2795](https://github.com/digitalocean/netbox/issues/2795) - Fix duplicate display of pagination controls on child prefix/IP tables
+* [#2798](https://github.com/digitalocean/netbox/issues/2798) - Properly URL-encode "map it" link on site view
+* [#2802](https://github.com/digitalocean/netbox/issues/2802) - Better error handling for unsupported NAPALM methods
+* [#2816](https://github.com/digitalocean/netbox/issues/2816) - Handle exception when deleting a device with connected components
+
+---
+
 v2.5.3 (2019-01-11)
 
 ## Enhancements
