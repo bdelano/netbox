@@ -179,10 +179,10 @@ Once your DAG is setup you will need to setup a DUO application via your Dashboa
 | Field | Value from netbox config |
 |-------|-------|
 | Service Provider Name | `a unique name for your instance` |
-| Entity ID| `http://localhost:8080/saml2/metadata/` |
-| Assertion Consumer Service | `http://localhost:8080/saml2/acs/` |
-| Single Logout URL | `http://localhost:8080/saml2/logout` |
-| Service Provider Login URL | `http://localhost:8080/saml2/logout` |
+| Entity ID| `https://<netbox_host>/saml2/metadata/` |
+| Assertion Consumer Service | `https://<netbox_host>/saml2/acs/` |
+| Single Logout URL | `https://<netbox_host>/logout` |
+| Service Provider Login URL | `https://<netbox_host>/saml2/logout` |
 * Save your changes
 * At the top of your page click 'Download your configuration file' (this will be used on your DAG)
 
