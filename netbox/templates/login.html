@@ -17,24 +17,38 @@
                 </div>
             </div>
         {% endif %}
-        <form action="{% url 'login' %}" method="post" class="form form-horizontal">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <strong>Log In</strong>
-                </div>
-                <div class="panel-body">
-                    {% csrf_token %}
-                    {% if 'next' in request.GET %}<input type="hidden" name="next" value="{{ request.GET.next }}" />{% endif %}
-                    {% render_form form %}
-                </div>
-                <div class="panel-footer text-right">
-                    <button type="submit" class="btn btn-primary">Log In</button>&nbsp;
-                    {% if settings.SAML_ENABLED %}
-                    <a href="/saml2/login" class="btn btn-primary">Log In with SAML</a>
-                    {% endif %}
-                </div>
+        <div class="modal fade" id="loginmodal" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <form action="{% url 'login' %}" method="post" class="form form-horizontal">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Log In</h4>
+              </div>
+              <div class="modal-body">
+                {% csrf_token %}
+                {% if 'next' in request.GET %}<input type="hidden" name="next" value="{{ request.GET.next }}" />{% endif %}
+                {% render_form form %}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Log In</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+          </form>
+        </div><!-- /.modal -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+              <strong>Log In Options</strong>
+          </div>
+            <div class="panel-body">
+              <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#loginmodal">
+              Local Login
+              </button>
+                <a href="/saml2/login" class="btn btn-primary btn-lg">Log In with SAML</a>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 {% endblock %}
