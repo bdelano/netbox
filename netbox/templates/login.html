@@ -43,10 +43,16 @@
               <strong>Log In Options</strong>
           </div>
             <div class="panel-body">
-              <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#loginmodal">
-              Local Login
-              </button>
+              {% if settings.SAML_ENABLED %}
+                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#loginmodal">
+                Log In Locally
+                </button>
                 <a href="/saml2/login" class="btn btn-primary btn-lg">Log In with SAML</a>
+              {% else %}
+                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#loginmodal">
+                Log In
+                </button>
+              {% endif %}
             </div>
         </div>
     </div>
