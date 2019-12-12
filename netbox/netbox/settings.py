@@ -126,6 +126,10 @@ if SAML_ENABLED:
         'djangosaml2.backends.Saml2Backend',
         'django.contrib.auth.backends.ModelBackend',
     ]
+    saml_logger = logging.getLogger('djangosaml2')
+    fh = logging.FileHandler('/opt/netbox/logs/djangosaml2.log')
+    saml_logger.addHandler(fh)
+    saml_logger.setLevel(logging.DEBUG)
 
     # Various SAML options
     SESSION_EXPIRE_AT_BROWSER_CLOSE = True
